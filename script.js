@@ -130,6 +130,8 @@ function replay() {
   apple.y = 320;
   snake.x = 160;
   snake.y = 160;
+  snake.dx = grid;
+  snake.dy = 0;
   handler = requestAnimationFrame(loop);
 }
 
