@@ -84,15 +84,7 @@ function loop() {
 
       // snake occupies same space as a body part. reset game
       if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-        snake.x = 160;
-        snake.y = 160;
-        snake.cells = [];
-        snake.maxCells = 4;
-        snake.dx = grid;
-        snake.dy = 0;
-
-        apple.x = getRandomInt(0, 25) * grid;
-        apple.y = getRandomInt(0, 25) * grid;
+        pause();
       }
     }
   });
@@ -126,12 +118,15 @@ function pause() {
 
 function replay() {
   document.removeEventListener('click', replay);
-  apple.x = 320;
-  apple.y = 320;
   snake.x = 160;
   snake.y = 160;
+  snake.cells = [];
+  snake.maxCells = 4;
   snake.dx = grid;
   snake.dy = 0;
+
+  apple.x = getRandomInt(0, 25) * grid;
+  apple.y = getRandomInt(0, 25) * grid;
   handler = requestAnimationFrame(loop);
 }
 
