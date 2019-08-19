@@ -35,8 +35,8 @@ function getRandomInt(min, max) {
 function loop() {
   handler = requestAnimationFrame(loop);
 
-  // slow game loop to 15 fps instead of 60 (60/15 = 4)
-  if (++count < 8) {
+  // slow game loop to 10 fps instead of 60 (60/10 = 6)
+  if (++count < 6) {
     return;
   }
 

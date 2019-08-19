@@ -1,0 +1,31 @@
+<canvas width="400" height="400" id="game"></canvas>
+<script>
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
+var x = 100;
+var y = 75;
+var handler;
+function loop() {
+  handler = requestAnimationFrame(loop);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  x += 1;
+  y += 1;
+  ctx.fillRect(x, y, 40, 40);
+  if (x > 300 && y > 300) {
+    cancelAnimationFrame(handler);
+  }
+}
+handler = requestAnimationFrame(loop);
+
+document.addEventListener('keydown', function(e) {
+  if (e.which === 38) { // 38 is the number for up arrow key.
+    ctx.fillStyle = 'red';
+  }
+});
+
+document.addEventListener('click', function(e) {
+  x = 100;
+  y = 75;
+  handler = requestAnimationFrame(loop);
+});
+</script>
