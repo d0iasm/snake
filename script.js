@@ -8,14 +8,14 @@ var snake = {
   x: 160,
   y: 160,
 
-  // snake velocity. moves one grid length every frame in either the x or y direction
+  // スネークの移動ベクトル
   dx: grid,
   dy: 0,
 
-  // keep track of all grids the snake body occupies
+  // スネークの体がどの位置を通ったのかを保存する配列
   cells: [],
 
-  // length of the snake. grows when eating an apple
+  // スネークの体の長さ。りんごを食べると1増える
   maxCells: 4
 };
 
@@ -26,16 +26,17 @@ var apple = {
 
 var handler = null;
 
-// get random whole numbers in a specific range
+// minからmaxの間でランダムな値を返す
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// game loop
+// ゲームのメイン関数
 function loop() {
   handler = requestAnimationFrame(loop);
 
-  // slow game loop to 10 fps instead of 60 (60/10 = 6)
+  // loop関数は1秒間に60回呼ばれるのは速すぎるため、
+  // 1秒間に10回のみ移動するようにする (60/10 = 6)
   if (++count < 6) {
     return;
   }
@@ -43,46 +44,47 @@ function loop() {
   count = 0;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // move snake by it's velocity
+  // (dx, dy) 方向に進む
   snake.x += snake.dx;
   snake.y += snake.dy;
 
+  // 壁に衝突した場合、ゲームが一時停止
   if (collision()) {
     pause();
   }
 
-  // keep track of where snake has been. front of the array is always the head
+  // スネークの次の位置をcellsの1番前に追加
   snake.cells.unshift({x: snake.x, y: snake.y});
 
-  // remove cells as we move away from them
+  // cellsの長さがスネークの長さより長くなった場合、1番古いcellを取り出す
   if (snake.cells.length > snake.maxCells) {
     snake.cells.pop();
   }
 
-  // draw apple
+  // りんごの描写
   ctx.fillStyle = 'red';
   ctx.fillRect(apple.x, apple.y, grid-1, grid-1);
 
-  // draw snake one cell at a time
+  // スネークの体を1セルずつ描写
   ctx.fillStyle = 'green';
   snake.cells.forEach(function(cell, index) {
 
     // drawing 1 px smaller than the grid creates a grid effect in the snake body so you can see how long it is
     ctx.fillRect(cell.x, cell.y, grid-1, grid-1);
 
-    // snake ate apple
+    // スネークがりんごを食べた場合
     if (cell.x === apple.x && cell.y === apple.y) {
       snake.maxCells++;
 
-      // canvas is 400x400 which is 25x25 grids
+      // キャンバスの大きさは400x400で、1つのセルの大きさは16x16のため、
+      // 25 (=400/16) のグリッドが存在し、その中のランダムな位置に次のりんごが出現する
       apple.x = getRandomInt(0, 25) * grid;
       apple.y = getRandomInt(0, 25) * grid;
     }
 
-    // check collision with all cells after this one (modified bubble sort)
+    // スネークが自身の体と衝突していないかチェックする
     for (var i = index + 1; i < snake.cells.length; i++) {
-
-      // snake occupies same space as a body part. reset game
+      // 衝突を発見したため、ゲームを一時停止
       if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
         pause();
       }
@@ -130,34 +132,30 @@ function replay() {
   handler = requestAnimationFrame(loop);
 }
 
-// listen to keyboard events to move the snake
+// 矢印キーで向きを変更するイベントの登録
+// 既に同じ方向を向いている場合は、影響がない
 document.addEventListener('keydown', function(e) {
-  // prevent snake from backtracking on itself by checking that it's
-  // not already moving on the same axis (pressing left while moving
-  // left won't do anything, and pressing right while moving left
-  // shouldn't let you collide with your own body)
-
-  // left arrow key
+  // 左矢印キー
   if (e.which === 37 && snake.dx === 0) {
     snake.dx = -grid;
     snake.dy = 0;
   }
-  // up arrow key
+  // 上矢印キー
   else if (e.which === 38 && snake.dy === 0) {
     snake.dy = -grid;
     snake.dx = 0;
   }
-  // right arrow key
+  // 右矢印キー
   else if (e.which === 39 && snake.dx === 0) {
     snake.dx = grid;
     snake.dy = 0;
   }
-  // down arrow key
+  // 下矢印キー
   else if (e.which === 40 && snake.dy === 0) {
     snake.dy = grid;
     snake.dx = 0;
   }
 });
 
-// start the game
+// ゲームスタート
 handler = requestAnimationFrame(loop);
