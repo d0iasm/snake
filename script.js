@@ -69,7 +69,7 @@ function loop() {
   ctx.fillStyle = 'green';
   snake.cells.forEach(function(cell, index) {
 
-    // drawing 1 px smaller than the grid creates a grid effect in the snake body so you can see how long it is
+    // スネークの体を描写
     ctx.fillRect(cell.x, cell.y, grid-1, grid-1);
 
     // スネークがりんごを食べた場合
